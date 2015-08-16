@@ -1,6 +1,5 @@
 ﻿function displayHtml(rawHtml) {
-    var prettyHtml = html_beautify(rawHtml);
-    editor.setValue(prettyHtml);
+    editor.setValue(rawHtml);
     editor.clearSelection();
     editor.gotoLine(0);
 }
