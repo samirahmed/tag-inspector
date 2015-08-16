@@ -79,7 +79,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\tagInspector.js" />
     <Content Include="Global.asax" />
+    <Content Include="Index.html" />
+    <Content Include="Assets\site.css" />
+    <Content Include="Assets\beautify-html.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
