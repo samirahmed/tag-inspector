@@ -1,22 +1,63 @@
 ﻿function displayHtml(rawHtml) {
     var prettyHtml = html_beautify(rawHtml);
     editor.setValue(prettyHtml);
+    editor.clearSelection();
+    editor.gotoLine(0);
 }
 
-function triggerLoad() {
-    editor.setValue("");
-    loadHtml($("#uri").val());
-}
+var app = {
+    serverTime: ko.observable(),
+    tags: ko.observableArray(),
+    statusCode: ko.observable(),
+    triggerLoad: function(formElement) {
+        editor.setValue("");
+        loadHtml($("#uri").val());
+    },
+    markers : [],
+    highlight: function (tagItem) {
+        var name = tagItem.tag;
+        console.log(name);
+        var TokenIterator = require("ace/token_iterator").TokenIterator;
+        var Range = require('ace/range').Range;
+        var isFirst = true;
+        app.markers.forEach(function (marker) {
+            editor.getSession().removeMarker(marker);
+        });
+
+        var iterator = new TokenIterator(editor.getSession(), 0, 0);
+        do {
+            var current = iterator.getCurrentToken();
+            if (!current) break;
+            if (current.type.indexOf("tag-name") < 0) continue;
+            if (current.value !== name) continue;
+            var col = iterator.getCurrentTokenColumn();
+            var row = iterator.getCurrentTokenRow();
+            var end = iterator.getCurrentToken().value.length;
+            var range = new Range(row, col, row, col+end);
+            app.markers.push(editor.getSession().addMarker(range, "tag-highlight", "text"));
+            if (isFirst) {
+                isFirst = false;
+                editor.gotoLine(row);
+            }
+        } while (iterator.stepForward());
+    }
+};
 
 function loadHtml(url) {
 
     $.getJSON("api/summary?url=" + encodeURI(url), function(data) {
 
         if (data.failureReason) {
-            // failure
+            
         }
         else {
             displayHtml(data.body);
+            app.serverTime(data.pageLoadTime);
+            app.statusCode(data.statusCode);
+            app.tags.removeAll();
+            Object.keys(data.frequency).forEach(function(key) {
+                app.tags.push({ tag: key, count: data.frequency[key] });
+            });
         }
     });
 }
@@ -26,11 +67,6 @@ editor.setTheme("ace/theme/monokai");
 editor.setShowPrintMargin(false);
 editor.setReadOnly(true);
 editor.getSession().setMode("ace/mode/html");
-displayHtml("<html><body><p>Enter A Url To Inspect</p></body></html>");
+displayHtml("");
 
-
-$("#uri").keypress(function(evt) {
-    if (evt.which == 13) {
-        triggerLoad();
-    }
-});
+ko.applyBindings(app);

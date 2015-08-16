@@ -31,6 +31,7 @@
     width: 280px;
     position: absolute;
     background-color: black;
+    overflow-y: scroll;
 }
 
 .url-entry-container {
@@ -73,4 +74,28 @@ button {
 
 input.url-entry {
     outline: none;
+}
+
+.tag-table {
+    margin: 10px 0 10px 10px;
+    color: #eeeeee;
+    font-size:12pt;
+}
+
+tr.tag-row:hover {
+    font-weight: bold;
+    margin: 5px;
+    cursor: pointer;
+}
+
+table.tag-table > thead > tr > th,
+table.tag-table > tbody > tr > td {
+    margin: 5px;
+    width: 120px;
+}
+
+.tag-highlight {
+    position: absolute;
+    z-index: 20;
+    background-color: rgba(256, 256, 0, 120);
 }
