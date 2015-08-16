@@ -6,7 +6,10 @@
 
 var app = {
     serverTime: ko.observable(),
+    createdAt: ko.observable(),
     tags: ko.observableArray(),
+    isLoading: ko.observable(false),
+    hasLoaded: ko.observable(false),
     statusCode: ko.observable(),
     triggerLoad: function(formElement) {
         editor.setValue("");
@@ -44,15 +47,18 @@ var app = {
 
 function loadHtml(url) {
 
-    $.getJSON("api/summary?url=" + encodeURI(url), function(data) {
-
+    app.isLoading(true);
+    $.getJSON("api/summary?url=" + encodeURI(url), function (data) {
+        app.isLoading(false);
         if (data.failureReason) {
-            
+
         }
         else {
             displayHtml(data.body);
-            app.serverTime(data.pageLoadTime);
+            app.hasLoaded(true);
+            app.serverTime(Math.round(data.pageLoadTime));
             app.statusCode(data.statusCode);
+            app.createdAt(new Date(data.createdAt).toString());
             app.tags.removeAll();
             Object.keys(data.frequency).forEach(function(key) {
                 app.tags.push({ tag: key, count: data.frequency[key] });
