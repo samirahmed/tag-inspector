@@ -7,7 +7,6 @@ namespace TagInspector.Api
 {
     public class InstanceCache
     {
-
         private static readonly Lazy<MemoryCache> LazyMemCache = new Lazy<MemoryCache>(() =>
         {
             var setting = new NameValueCollection
@@ -57,6 +56,11 @@ namespace TagInspector.Api
             {
                 Cache.Remove(key);
             }
+        }
+
+        public void Clear()
+        {
+            foreach (var kvPair in Cache) Unset(kvPair.Key);
         }
     }
 }

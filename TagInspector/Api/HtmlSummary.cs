@@ -33,12 +33,12 @@ namespace TagInspector.Api
             this.Body = "";
             this.CreatedAt = DateTime.UtcNow;
             this.PageLoadTime = -1;
+            this.Frequency = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
         }
 
         public HtmlSummary(HttpStatusCode statusCode, string url, string body, string mediaType)
             : this()
         {
-            this.Frequency = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
             this.StatusCode = statusCode;
             this.Url = url;
 
