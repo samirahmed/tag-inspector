@@ -4,10 +4,12 @@
 }
 
 function triggerLoad() {
+    editor.setValue("");
     loadHtml($("#uri").val());
 }
 
 function loadHtml(url) {
+
     $.getJSON("api/summary?url=" + encodeURI(url), function(data) {
 
         if (data.failureReason) {
@@ -26,3 +28,9 @@ editor.setReadOnly(true);
 editor.getSession().setMode("ace/mode/html");
 displayHtml("<html><body><p>Enter A Url To Inspect</p></body></html>");
 
+
+$("#uri").keypress(function(evt) {
+    if (evt.which == 13) {
+        triggerLoad();
+    }
+});
