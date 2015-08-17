@@ -28,6 +28,9 @@ namespace TagInspector.Api
 
         public string Body { get; set; }
 
+        /// <summary>
+        ///  Create a new empty HtmlSummary
+        /// </summary>
         public HtmlSummary()
         {
             this.Body = "";
@@ -36,6 +39,13 @@ namespace TagInspector.Api
             this.Frequency = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
         }
 
+        /// <summary>
+        ///  Create a new empty Html Summary from an HTTP response
+        /// </summary>
+        /// <param name="statusCode">Response Status Code</param>
+        /// <param name="url">Request Url</param>
+        /// <param name="body">Response body</param>
+        /// <param name="mediaType">Response content media type header value</param>
         public HtmlSummary(HttpStatusCode statusCode, string url, string body, string mediaType)
             : this()
         {
@@ -69,6 +79,12 @@ namespace TagInspector.Api
             }
         }
 
+        /// <summary>
+        ///  Recursively count tag nodes ocurrences
+        /// </summary>
+        /// <param name="node">root node</param>
+        /// <param name="frequency">frequency dictionary</param>
+        /// <remarks>Disregard nodes that are not HTML elements (like comments/docs)</remarks>
         public static void CountFrequency(HtmlNode node, Dictionary<string, int> frequency)
         {
             if (node.NodeType == HtmlNodeType.Element)
@@ -80,6 +96,11 @@ namespace TagInspector.Api
             foreach (var child in node.ChildNodes) CountFrequency(child, frequency);
         }
 
+        /// <summary>
+        ///  Fetch HTML from URI and generate summary
+        /// </summary>
+        /// <param name="uri">Remote URL</param>
+        /// <returns>HTML Summary Object</returns>
         public static async Task<HtmlSummary> GenerateSummary(Uri uri)
         {
             using (var client = new HttpClient())

@@ -1,12 +1,8 @@
-﻿var TokenIterator = require("ace/token_iterator").TokenIterator;
+﻿// require ace internals
+var TokenIterator = require("ace/token_iterator").TokenIterator;
 var Range = require('ace/range').Range;
 
-function displayHtml(rawHtml) {
-    editor.setValue(rawHtml);
-    editor.clearSelection();
-    editor.gotoLine(0);
-}
-
+// app KnockOut ViewModel
 var app = {
 
     serverTime: ko.observable(),
@@ -57,6 +53,14 @@ var app = {
     }
 };
 
+// displays Html Source
+function displayHtml(rawHtml) {
+    editor.setValue(rawHtml);
+    editor.clearSelection();
+    editor.gotoLine(0);
+}
+
+// loads HTML Summary from api
 function loadHtml(url) {
 
     app.isLoading(true);
@@ -84,6 +88,7 @@ function loadHtml(url) {
         });
 }
 
+// configure ace editor
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai");
 editor.setShowPrintMargin(false);

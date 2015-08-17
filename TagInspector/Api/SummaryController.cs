@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -8,6 +7,9 @@ namespace TagInspector.Api
 {
     public class SummaryController : ApiController
     {
+        /// <summary>
+        ///  Cache responses in memory for upto 1 hour
+        /// </summary>
         public InstanceCache Cache = new InstanceCache(TimeSpan.FromHours(1));
 
         [Route("api/summary")]
