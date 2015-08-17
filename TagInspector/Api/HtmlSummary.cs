@@ -42,10 +42,19 @@ namespace TagInspector.Api
             this.StatusCode = statusCode;
             this.Url = url;
 
+            if (((int)statusCode)/100 != 2)
+            {
+                this.FailureReason = string.Format(@"Remote Server returned status code {0} {1}",
+                    (int) statusCode, statusCode);
+                return;
+            }
+
             if (mediaType.IsNullOrWhiteSpace() ||
                 !HtmlMediaTypes.Any(_ => _.Equals(mediaType, StringComparison.OrdinalIgnoreCase)))
             {
-                this.FailureReason = @"The server at URL {0} did not return an HTML 'response' type";
+                this.FailureReason = string.Format
+                    (@"The server at URL {0} returned non-HTML media type '{1}'", this.Url, mediaType);
+                return;
             }
 
             var doc = new HtmlDocument {OptionFixNestedTags = true};

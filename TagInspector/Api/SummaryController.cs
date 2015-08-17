@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -28,8 +29,19 @@ namespace TagInspector.Api
                 if (cachedItem != null) return cachedItem;
             }
 
-            var summary = await HtmlSummary.GenerateSummary(uri);
-            Cache.Set(requestUrl, summary);
+            HtmlSummary summary;
+            try
+            {
+                summary = await HtmlSummary.GenerateSummary(uri);
+                Cache.Set(requestUrl, summary);
+            }
+            catch (HttpRequestException ex)
+            {
+                summary = new HtmlSummary
+                {
+                    FailureReason = ex.InnerException.Message
+                };
+            }
 
             return summary;
         }
